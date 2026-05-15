@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guía de inicio · Claude Teams · Equipo Zubi</title>
+<title>Guía Claude · Equipo Zubi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Spline+Sans:wght@400;500;600&family=Spline+Sans+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -20,10 +20,11 @@
     --sage: #5c6e49;
     --line: #d8cdb8;
     --shadow: rgba(40, 30, 15, 0.13);
+    --danger-bg: #fbe6dd;
+    --danger-border: #e6b89f;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
   html { scroll-behavior: smooth; }
 
   body {
@@ -37,68 +38,178 @@
       radial-gradient(circle at 88% 92%, rgba(92,110,73,0.08), transparent 42%);
   }
 
-  /* ---------- Layout ---------- */
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 28px; }
+  .shell { display: grid; grid-template-columns: 276px 1fr; gap: 0; }
 
-  .shell { display: grid; grid-template-columns: 248px 1fr; gap: 0; }
-
-  /* ---------- Sidebar nav ---------- */
   nav.toc {
     position: sticky;
     top: 0;
     height: 100vh;
-    padding: 44px 24px 44px 0;
+    padding: 36px 24px 36px 0;
     border-right: 1px solid var(--line);
     overflow-y: auto;
   }
-  nav.toc .brand {
+  nav.toc::-webkit-scrollbar { width: 6px; }
+  nav.toc::-webkit-scrollbar-thumb { background: var(--line); border-radius: 99px; }
+
+  .brand-block {
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 22px;
+  }
+  .brand {
     font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: 1.15rem;
+    font-size: 1.18rem;
     letter-spacing: -0.01em;
     margin-bottom: 4px;
   }
-  nav.toc .brand span { color: var(--rust); }
-  nav.toc .brand-sub {
+  .brand span { color: var(--rust); }
+  .brand-sub {
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 0.14em;
     color: var(--ink-soft);
-    margin-bottom: 32px;
+    margin-bottom: 14px;
   }
-  nav.toc ol { list-style: none; counter-reset: toc; }
-  nav.toc li { counter-increment: toc; margin-bottom: 2px; }
-  nav.toc a {
+  .version-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.72rem;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4px 10px;
+    border-radius: 99px;
+  }
+  .version-tag .dot {
+    width: 6px; height: 6px;
+    background: var(--ochre);
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(196,137,43,0.25);
+  }
+  .version-date {
+    display: block;
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    margin-top: 7px;
+    letter-spacing: 0.02em;
+  }
+
+  .category { margin-bottom: 6px; }
+  .cat-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 11px 12px;
+    border-radius: 8px;
+    text-align: left;
+    transition: background 0.15s;
+    color: var(--ink);
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 0.98rem;
+    letter-spacing: -0.005em;
+  }
+  .cat-header:hover { background: var(--paper-deep); }
+  .cat-header .cat-label {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    flex: 1;
+    min-width: 0;
+  }
+  .cat-header .cat-num {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--rust);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+  .cat-header .cat-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .cat-header .cat-chev {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.95rem;
+    color: var(--rust);
+    transition: transform 0.25s ease;
+    flex-shrink: 0;
+  }
+  .category.open .cat-header .cat-chev { transform: rotate(90deg); }
+  .category.locked .cat-header {
+    cursor: default;
+    opacity: 0.55;
+  }
+  .category.locked .cat-header:hover { background: none; }
+  .category.locked .cat-header .cat-chev { display: none; }
+  .cat-badge {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    background: var(--paper-deep);
+    color: var(--ink-soft);
+    padding: 2px 7px;
+    border-radius: 99px;
+    border: 1px dashed var(--line);
+  }
+
+  .cat-items {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.32s ease;
+    padding-left: 6px;
+  }
+  .category.open .cat-items { max-height: 800px; }
+
+  .cat-items ol { list-style: none; padding: 4px 0 8px; }
+  .cat-items a {
     display: flex;
     gap: 10px;
     align-items: baseline;
     text-decoration: none;
     color: var(--ink-soft);
-    font-size: 0.9rem;
-    padding: 7px 12px;
+    font-size: 0.86rem;
+    padding: 6px 12px 6px 22px;
     border-radius: 7px;
-    transition: background 0.18s, color 0.18s;
+    margin: 1px 0;
+    transition: background 0.15s, color 0.15s;
+    position: relative;
   }
-  nav.toc a::before {
-    content: counter(toc, decimal-leading-zero);
-    font-family: 'Spline Sans Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--rust);
-    flex-shrink: 0;
+  .cat-items a::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 14px;
+    width: 6px;
+    height: 1px;
+    background: var(--line);
   }
-  nav.toc a:hover { background: var(--paper-deep); color: var(--ink); }
-  nav.toc a.active { background: var(--ink); color: var(--paper); }
-  nav.toc a.active::before { color: var(--ochre); }
+  .cat-items a:hover { background: var(--paper-deep); color: var(--ink); }
+  .cat-items a.active {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .cat-items a.active::before { background: var(--ochre); }
 
-  main { padding: 44px 0 44px 48px; min-width: 0; }
+  main { padding: 36px 0 60px 56px; min-width: 0; }
 
-  /* ---------- Hero ---------- */
   .hero {
     border: 1px solid var(--line);
     background: var(--card);
     border-radius: 18px;
-    padding: 48px 46px;
-    margin-bottom: 56px;
+    padding: 44px 44px;
+    margin-bottom: 50px;
     position: relative;
     overflow: hidden;
     box-shadow: 0 24px 48px -28px var(--shadow);
@@ -122,27 +233,25 @@
   .hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     line-height: 1.08;
     letter-spacing: -0.02em;
     margin-bottom: 18px;
-    max-width: 18ch;
+    max-width: 20ch;
   }
   .hero h1 em { font-style: italic; color: var(--rust); }
   .hero p.lead {
-    font-size: 1.07rem;
+    font-size: 1.05rem;
     color: var(--ink-soft);
     max-width: 60ch;
   }
   .hero .meta {
     display: flex;
     gap: 28px;
-    margin-top: 30px;
+    margin-top: 26px;
     flex-wrap: wrap;
   }
-  .hero .meta div {
-    font-size: 0.82rem;
-  }
+  .hero .meta div { font-size: 0.82rem; }
   .hero .meta .m-label {
     font-family: 'Spline Sans Mono', monospace;
     text-transform: uppercase;
@@ -153,13 +262,31 @@
     margin-bottom: 2px;
   }
 
-  /* ---------- Sections ---------- */
-  section { margin-bottom: 64px; scroll-margin-top: 28px; }
+  .cat-banner {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.74rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--rust);
+    margin-bottom: 6px;
+    padding-bottom: 8px;
+  }
+  .cat-banner::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  section { margin-bottom: 60px; scroll-margin-top: 28px; }
   .sec-head {
     display: flex;
     align-items: baseline;
     gap: 16px;
-    margin-bottom: 24px;
+    margin-bottom: 22px;
     padding-bottom: 14px;
     border-bottom: 2px solid var(--ink);
   }
@@ -172,36 +299,34 @@
   .sec-head h2 {
     font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: 1.85rem;
+    font-size: 1.8rem;
     letter-spacing: -0.018em;
     line-height: 1.15;
   }
+  .sec-head h2 em { font-style: italic; color: var(--rust); }
   section > p { margin-bottom: 16px; color: var(--ink-soft); }
   section > p strong { color: var(--ink); font-weight: 600; }
 
   h3 {
     font-family: 'Fraunces', serif;
     font-weight: 600;
-    font-size: 1.22rem;
-    margin: 30px 0 12px;
+    font-size: 1.2rem;
+    margin: 28px 0 12px;
     letter-spacing: -0.01em;
   }
 
-  /* ---------- Cards ---------- */
   .card {
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 14px;
-    padding: 24px 26px;
-    margin-bottom: 18px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
     box-shadow: 0 14px 30px -26px var(--shadow);
   }
   .card h3 { margin-top: 0; }
-
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
   .grid-2 .card { margin-bottom: 0; }
 
-  /* ---------- Steps ---------- */
   ol.steps { list-style: none; counter-reset: step; margin: 8px 0; }
   ol.steps li {
     counter-increment: step;
@@ -246,7 +371,6 @@
   }
   ul.bullets li strong { color: var(--ink); }
 
-  /* ---------- Callouts ---------- */
   .callout {
     border-radius: 12px;
     padding: 18px 22px 18px 52px;
@@ -262,17 +386,31 @@
   .callout .c-title {
     font-weight: 600;
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     font-family: 'Fraunces', serif;
     font-size: 1.02rem;
   }
   .callout.warn {
-    background: #fbe6dd;
-    border: 1px solid #e6b89f;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
     color: var(--rust-deep);
   }
   .callout.warn::before { content: "⚠"; }
   .callout.warn .c-title { color: var(--rust-deep); }
+  .callout.danger {
+    background: #fbd9c9;
+    border: 2px solid var(--rust);
+    color: var(--rust-deep);
+    padding: 22px 24px 22px 60px;
+  }
+  .callout.danger::before { content: "⛔"; top: 20px; }
+  .callout.danger .c-title {
+    color: var(--rust-deep);
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+  }
+  .callout.danger p { margin-bottom: 8px; }
+  .callout.danger p:last-child { margin-bottom: 0; }
   .callout.tip {
     background: #e9eee0;
     border: 1px solid #c2cdac;
@@ -297,7 +435,6 @@
     color: var(--rust-deep);
   }
 
-  /* ---------- Comparison table ---------- */
   .cmp {
     width: 100%;
     border-collapse: collapse;
@@ -331,7 +468,6 @@
   }
   .cmp tbody tr:nth-child(even) { background: #faf6ee; }
 
-  /* ---------- Accordion (interactive) ---------- */
   details.acc {
     background: var(--card);
     border: 1px solid var(--line);
@@ -373,7 +509,6 @@
   details.acc .acc-body p { margin-bottom: 10px; }
   details.acc .acc-body p:last-child { margin-bottom: 0; }
 
-  /* ---------- Checklist (interactive) ---------- */
   .checklist { margin: 10px 0; }
   .checklist label {
     display: flex;
@@ -385,7 +520,7 @@
     border-radius: 10px;
     margin-bottom: 9px;
     cursor: pointer;
-    transition: background 0.15s, border-color 0.15s;
+    transition: background 0.15s;
   }
   .checklist label:hover { background: var(--paper-deep); }
   .checklist input {
@@ -433,21 +568,6 @@
     margin-bottom: 4px;
   }
 
-  /* ---------- Pill tags ---------- */
-  .pill {
-    display: inline-block;
-    font-family: 'Spline Sans Mono', monospace;
-    font-size: 0.68rem;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    padding: 3px 9px;
-    border-radius: 99px;
-    margin-right: 6px;
-  }
-  .pill.do { background: #e9eee0; color: #3f4a30; border: 1px solid #c2cdac; }
-  .pill.dont { background: #fbe6dd; color: var(--rust-deep); border: 1px solid #e6b89f; }
-
-  /* ---------- Example block ---------- */
   .example {
     background: var(--paper-deep);
     border-left: 3px solid var(--ochre);
@@ -467,7 +587,6 @@
   }
   .example em { color: var(--ink); font-style: italic; }
 
-  /* ---------- Footer ---------- */
   footer {
     border-top: 2px solid var(--ink);
     padding: 32px 0 60px;
@@ -477,26 +596,55 @@
   }
   footer strong { color: var(--ink); font-family: 'Fraunces', serif; }
   footer a { color: var(--rust); }
+  .changelog {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--line);
+  }
+  .changelog h4 {
+    font-family: 'Spline Sans Mono', monospace;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--rust);
+    margin-bottom: 12px;
+  }
+  .changelog ul { list-style: none; }
+  .changelog li {
+    padding: 8px 0;
+    font-size: 0.84rem;
+    display: flex;
+    gap: 14px;
+    border-bottom: 1px dotted var(--line);
+    align-items: baseline;
+  }
+  .changelog li:last-child { border-bottom: none; }
+  .changelog .cl-ver {
+    font-family: 'Spline Sans Mono', monospace;
+    color: var(--rust);
+    flex-shrink: 0;
+    width: 64px;
+  }
+  .changelog .cl-date {
+    font-family: 'Spline Sans Mono', monospace;
+    color: var(--ink-soft);
+    flex-shrink: 0;
+    width: 92px;
+    font-size: 0.78rem;
+  }
 
-  /* ---------- Responsive ---------- */
-  @media (max-width: 880px) {
+  @media (max-width: 900px) {
     .shell { grid-template-columns: 1fr; }
     nav.toc {
       position: static;
       height: auto;
       border-right: none;
       border-bottom: 1px solid var(--line);
-      padding: 28px 0;
+      padding: 24px 0;
     }
-    nav.toc ol {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    nav.toc li { margin-bottom: 0; }
-    main { padding: 32px 0; }
+    main { padding: 28px 0; }
     .grid-2 { grid-template-columns: 1fr; }
-    .hero { padding: 32px 26px; }
+    .hero { padding: 30px 24px; }
   }
 </style>
 </head>
@@ -505,40 +653,94 @@
 <div class="wrap">
 <div class="shell">
 
-  <!-- ============ SIDEBAR ============ -->
   <nav class="toc">
-    <div class="brand">Equipo <span>Zubi</span></div>
-    <div class="brand-sub">Guía de inicio · Claude Teams</div>
-    <ol>
-      <li><a href="#que-es">Qué es Claude</a></li>
-      <li><a href="#primeros-pasos">Tus primeros 15 minutos</a></li>
-      <li><a href="#funcionalidades">Funcionalidades clave</a></li>
-      <li><a href="#teams-vs-particular">Teams vs. cuenta particular</a></li>
-      <li><a href="#compartir">Cómo se comparte la información</a></li>
-      <li><a href="#email-grupo">Convivir en un email de grupo</a></li>
-      <li><a href="#conectores">Conectores y cómo conectar Drive</a></li>
-      <li><a href="#cowork">Cowork: el agente de escritorio</a></li>
-      <li><a href="#code">Claude Code (para saber qué es)</a></li>
-      <li><a href="#checklist">Checklist de buenas prácticas</a></li>
-    </ol>
-  </nav>
+    <div class="brand-block">
+      <div class="brand">Equipo <span>Zubi</span></div>
+      <div class="brand-sub">Centro de aprendizaje · Claude</div>
+      <span class="version-tag"><span class="dot"></span>v1.1.0</span>
+      <span class="version-date">Actualizado: 15 may 2026</span>
+    </div>
 
-  <!-- ============ MAIN ============ -->
-  <main>
-
-    <!-- HERO -->
-    <div class="hero">
-      <div class="kicker">Bienvenida / Bienvenido al equipo</div>
-      <h1>Acabas de recibir tu licencia <em>Claude Teams</em>. Empecemos por lo importante.</h1>
-      <p class="lead">Esta guía te lleva de cero a productivo: qué es Claude, cómo trabajar bien dentro del entorno Teams, cómo compartir información sin pisar a tus compañeros y cómo aprovechar conectores, Cowork y Code. Léela una vez de principio a fin; después úsala como referencia.</p>
-      <div class="meta">
-        <div><span class="m-label">Para</span>Nuevas incorporaciones del equipo Zubi</div>
-        <div><span class="m-label">Entorno</span>Claude for Work · Plan Team</div>
-        <div><span class="m-label">Tiempo de lectura</span>~15 minutos</div>
+    <div class="category open" data-cat="onboarding">
+      <button class="cat-header" type="button">
+        <span class="cat-label">
+          <span class="cat-num">01</span>
+          <span class="cat-title">Onboarding Claude Team</span>
+        </span>
+        <span class="cat-chev">›</span>
+      </button>
+      <div class="cat-items">
+        <ol>
+          <li><a href="#que-es">Qué es Claude</a></li>
+          <li><a href="#primeros-pasos">Tus primeros 15 minutos</a></li>
+          <li><a href="#funcionalidades">Funcionalidades clave</a></li>
+          <li><a href="#teams-vs-particular">Teams vs. licencia particular</a></li>
+          <li><a href="#compartir">Cómo se comparte la información</a></li>
+          <li><a href="#email-grupo">Convivir en un email de grupo</a></li>
+          <li><a href="#limites-tokens">Límites de tokens en cuenta compartida</a></li>
+          <li><a href="#conectores">Conectores y cómo conectar Drive</a></li>
+          <li><a href="#cowork">Cowork: precauciones importantes</a></li>
+          <li><a href="#code">Claude Code (para saber qué es)</a></li>
+          <li><a href="#checklist">Checklist de buenas prácticas</a></li>
+        </ol>
       </div>
     </div>
 
-    <!-- 1. QUÉ ES -->
+    <div class="category locked" data-cat="pildoras">
+      <button class="cat-header" type="button" aria-disabled="true">
+        <span class="cat-label">
+          <span class="cat-num">02</span>
+          <span class="cat-title">Píldoras semanales</span>
+        </span>
+        <span class="cat-badge">Próx.</span>
+      </button>
+    </div>
+
+    <div class="category locked" data-cat="casos">
+      <button class="cat-header" type="button" aria-disabled="true">
+        <span class="cat-label">
+          <span class="cat-num">03</span>
+          <span class="cat-title">Casos de uso por área</span>
+        </span>
+        <span class="cat-badge">Próx.</span>
+      </button>
+    </div>
+
+    <div class="category locked" data-cat="recetas">
+      <button class="cat-header" type="button" aria-disabled="true">
+        <span class="cat-label">
+          <span class="cat-num">04</span>
+          <span class="cat-title">Recetas de prompts</span>
+        </span>
+        <span class="cat-badge">Próx.</span>
+      </button>
+    </div>
+
+    <div class="category locked" data-cat="avanzado">
+      <button class="cat-header" type="button" aria-disabled="true">
+        <span class="cat-label">
+          <span class="cat-num">05</span>
+          <span class="cat-title">Uso avanzado</span>
+        </span>
+        <span class="cat-badge">Próx.</span>
+      </button>
+    </div>
+  </nav>
+
+  <main>
+
+    <div class="hero">
+      <div class="kicker">Centro de aprendizaje · Equipo Zubi</div>
+      <h1>Aprende a usar <em>Claude</em> en el equipo, semana a semana.</h1>
+      <p class="lead">Este es el espacio vivo de formación del equipo Zubi sobre Claude. Empieza por el onboarding y vuelve cuando quieras: iremos añadiendo píldoras de aprendizaje, casos de uso y recetas. Cada nueva versión se publica con su fecha visible arriba en la barra lateral.</p>
+      <div class="meta">
+        <div><span class="m-label">Para</span>Todo el equipo Zubi</div>
+        <div><span class="m-label">Entorno</span>Claude for Work · Plan Team</div>
+      </div>
+    </div>
+
+    <div class="cat-banner">Categoría 01 — Onboarding Claude Team</div>
+
     <section id="que-es">
       <div class="sec-head">
         <span class="sec-num">01</span>
@@ -559,7 +761,6 @@
       </ul>
     </section>
 
-    <!-- 2. PRIMEROS PASOS -->
     <section id="primeros-pasos">
       <div class="sec-head">
         <span class="sec-num">02</span>
@@ -594,14 +795,12 @@
       </div>
     </section>
 
-    <!-- 3. FUNCIONALIDADES -->
     <section id="funcionalidades">
       <div class="sec-head">
         <span class="sec-num">03</span>
         <h2>Funcionalidades clave que vas a usar</h2>
       </div>
       <p>Estas son las piezas del entorno. No necesitas dominarlas todas hoy, pero conviene saber que existen.</p>
-
       <div class="grid-2">
         <div class="card">
           <h3>Chats</h3>
@@ -621,80 +820,50 @@
         </div>
         <div class="card">
           <h3>Cowork</h3>
-          <p style="color:var(--ink-soft);font-size:0.94rem;">Un agente de escritorio que ejecuta tareas de varios pasos sobre tus archivos locales, no solo conversa.</p>
+          <p style="color:var(--ink-soft);font-size:0.94rem;">Un agente de escritorio que ejecuta tareas sobre archivos locales. <strong style="color:var(--rust-deep);">Solo uso individual</strong> — ver sección 09.</p>
         </div>
         <div class="card">
           <h3>Claude Code</h3>
           <p style="color:var(--ink-soft);font-size:0.94rem;">Herramienta para tareas de programación desde la terminal. En el equipo no es la prioridad, pero conviene saber qué es.</p>
         </div>
       </div>
-
       <div class="callout info">
         <span class="c-title">Ventana de contexto</span>
         El plan Team trabaja con una ventana de contexto de 200.000 tokens, el equivalente aproximado a un libro de 500 páginas. Eso significa que puedes darle documentos largos y mantener conversaciones extensas sin que pierda el hilo.
       </div>
     </section>
 
-    <!-- 4. TEAMS VS PARTICULAR -->
     <section id="teams-vs-particular">
       <div class="sec-head">
         <span class="sec-num">04</span>
         <h2>Cómo se estructura el entorno Teams frente a una licencia particular</h2>
       </div>
       <p>Una cuenta particular (Free, Pro o Max) es <strong>individual</strong>: tus chats y projects son solo tuyos. El plan Team añade una capa de <strong>organización y colaboración</strong> por encima de eso.</p>
-
       <table class="cmp">
         <thead>
           <tr><th>Aspecto</th><th>Licencia particular</th><th>Plan Teams (Zubi)</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Ámbito</td>
-            <td>Solo tú. Nada se comparte automáticamente.</td>
-            <td>Una organización con varios miembros y administración centralizada.</td>
-          </tr>
-          <tr>
-            <td>Projects</td>
-            <td>Privados, de uso personal.</td>
-            <td>Se pueden compartir con compañeros concretos o con toda la organización.</td>
-          </tr>
-          <tr>
-            <td>Base de conocimiento</td>
-            <td>Cada quien sube lo suyo, en su propio espacio.</td>
-            <td>El equipo construye una base común dentro de un project compartido.</td>
-          </tr>
-          <tr>
-            <td>Límites de uso</td>
-            <td>El límite de tu plan personal.</td>
-            <td>Límites <strong>por persona</strong>: si un compañero agota el suyo, no afecta al tuyo.</td>
-          </tr>
-          <tr>
-            <td>Privacidad de datos</td>
-            <td>Según la configuración de tu cuenta.</td>
-            <td>El contenido de los projects y chats del equipo no se usa para entrenar modelos.</td>
-          </tr>
-          <tr>
-            <td>Administración</td>
-            <td>No aplica.</td>
-            <td>Hay roles de Owner que gestionan miembros, conectores y permisos de la organización.</td>
-          </tr>
+          <tr><td>Ámbito</td><td>Solo tú. Nada se comparte automáticamente.</td><td>Una organización con varios miembros y administración centralizada.</td></tr>
+          <tr><td>Projects</td><td>Privados, de uso personal.</td><td>Se pueden compartir con compañeros concretos o con toda la organización.</td></tr>
+          <tr><td>Base de conocimiento</td><td>Cada quien sube lo suyo, en su propio espacio.</td><td>El equipo construye una base común dentro de un project compartido.</td></tr>
+          <tr><td>Límites de uso</td><td>El límite de tu plan personal.</td><td>Límites <strong>por asiento</strong>: si entráis con un email de grupo, ese asiento es uno solo y se reparte (ver sección 07).</td></tr>
+          <tr><td>Privacidad de datos</td><td>Según la configuración de tu cuenta.</td><td>El contenido de los projects y chats del equipo no se usa para entrenar modelos.</td></tr>
+          <tr><td>Administración</td><td>No aplica.</td><td>Hay roles de Owner que gestionan miembros, conectores y permisos de la organización.</td></tr>
         </tbody>
       </table>
-
       <div class="callout tip">
         <span class="c-title">La diferencia que más vas a notar</span>
         En Teams, los Projects dejan de ser una carpeta personal y se convierten en el espacio común del equipo: una "fuente de la verdad" compartida. El project <strong>Zubi</strong> es exactamente eso para vosotros.
       </div>
     </section>
 
-    <!-- 5. COMPARTIR -->
     <section id="compartir">
       <div class="sec-head">
         <span class="sec-num">05</span>
         <h2>Cómo se comparte la información dentro de Teams</h2>
       </div>
       <p>Conviene entender qué se comparte y qué no, porque <strong>no todo es automático</strong>. Hay dos niveles distintos: el Project y el chat.</p>
-
       <h3>El Project se comparte; sus permisos los decides tú</h3>
       <ul class="bullets">
         <li>Un project puede ser <strong>privado</strong> (solo tú y quien invites), <strong>compartido con personas concretas</strong> (por email) o <strong>visible para toda la organización</strong>.</li>
@@ -702,28 +871,24 @@
         <li>Cuando alguien comparte un project contigo, recibes un aviso por email y aparece en tu pestaña <em>"Compartido contigo"</em>.</li>
         <li>Buena práctica: <strong>empieza siempre los projects nuevos en privado</strong> y ábrelos cuando estés seguro de su contenido.</li>
       </ul>
-
       <h3>Los chats NO se comparten por defecto</h3>
       <ul class="bullets">
         <li>Aunque trabajes dentro del project Zubi, <strong>tus chats individuales siguen siendo privados</strong>. Compartir un project da acceso a su base de conocimiento, no a las conversaciones de cada uno.</li>
         <li>Si quieres que un compañero vea un chat concreto, tienes que compartirlo explícitamente con el botón <em>"Share"</em> del propio chat.</li>
         <li>Al compartir un chat se crea una instantánea con los mensajes enviados hasta ese momento; los posteriores siguen privados salvo que actualices la instantánea.</li>
       </ul>
-
       <div class="callout warn">
         <span class="c-title">Ojo con esto</span>
         Restringir la visibilidad no sustituye al sentido común. Igual que en un Drive compartido cualquiera puede subir un documento a la vista de todos, en Teams hay que tratar la información sensible con cuidado: piensa antes de subir algo a un project visible para toda la organización.
       </div>
     </section>
 
-    <!-- 6. EMAIL DE GRUPO -->
     <section id="email-grupo">
       <div class="sec-head">
         <span class="sec-num">06</span>
         <h2>Convivir en un mismo acceso: el email de grupo</h2>
       </div>
       <p>En vuestro caso, varias personas entran con un <strong>email de grupo</strong>. Eso significa que compartís la misma cuenta de Claude, así que hay que ser ordenados para no pisaros. Estas son las reglas de convivencia.</p>
-
       <h3>No os piséis en los chats</h3>
       <ul class="bullets">
         <li><strong>Cada persona, sus propios chats.</strong> Nunca retoméis ni escribáis encima del chat que ha abierto otra persona. Si dos personas escriben en el mismo hilo, el contexto se mezcla y el resultado se vuelve inservible para ambas.</li>
@@ -731,12 +896,10 @@
         <li><strong>Nombrad los chats de forma identificable.</strong> Poned al principio del título vuestras iniciales o nombre y el tema: por ejemplo <code>[MARÍA] Propuesta cliente Norte</code> o <code>[JL] Acta reunión semanal</code>. Así, de un vistazo, cada uno encuentra lo suyo y sabe qué no debe tocar.</li>
         <li><strong>Si vais a trabajar en equipo sobre un tema común,</strong> hacedlo a través del <em>Project</em> compartido (subiendo documentos a su base de conocimiento), no metiendo a varias personas en el mismo chat.</li>
       </ul>
-
       <div class="callout warn">
         <span class="c-title">Regla crítica con cuenta de grupo: nada de conectores ni Drive personales</span>
         Cuando entráis con un email de grupo, <strong>no conectéis vuestro Google Drive personal ni vuestros conectores individuales</strong> al chat. La conexión queda asociada a la cuenta compartida, lo que significa que el resto de personas que usan ese email podrían acabar viendo o accediendo a vuestros archivos privados. Es una fuga de información esperando a ocurrir.
       </div>
-
       <h3>Si de verdad necesitáis usar conectores con la cuenta de grupo</h3>
       <p>La solución no es renunciar a los conectores, sino usar <strong>recursos también compartidos</strong>, nunca personales:</p>
       <ul class="bullets">
@@ -745,26 +908,48 @@
         <li><strong>El principio general:</strong> recurso compartido sobre cuenta compartida. Drive compartido + cuenta Google del grupo. Así, lo que vea Claude es lo que el equipo ya comparte de todas formas, y nadie expone nada que fuera privado.</li>
         <li>Si una tarea requiere acceder a archivos verdaderamente personales, <strong>hazla desde tu propia licencia individual</strong>, no desde la cuenta de grupo.</li>
       </ul>
-
       <div class="callout tip">
         <span class="c-title">Resumen de convivencia</span>
         Chats separados y bien nombrados · trabajo común a través del Project Zubi · cero conectores personales en la cuenta de grupo · si hacen falta conectores, siempre con cuenta y Drive compartidos del equipo.
       </div>
     </section>
 
-    <!-- 7. CONECTORES -->
-    <section id="conectores">
+    <section id="limites-tokens">
       <div class="sec-head">
         <span class="sec-num">07</span>
+        <h2>Límites de tokens en una cuenta compartida</h2>
+      </div>
+      <p>Este es un punto que conviene tener muy presente cuando varias personas trabajan desde el mismo email de grupo.</p>
+      <h3>Cómo funcionan los límites</h3>
+      <p>El plan Team aplica los límites de uso <strong>por asiento</strong>, no por persona. Cuando una organización contrata Teams, cada miembro tiene su asiento y, con él, su propia franja de uso semanal. Si una persona agota la suya, no afecta a las demás.</p>
+      <div class="callout danger">
+        <span class="c-title">Pero en una cuenta de grupo, el asiento es uno solo</span>
+        <p>Si varias personas entran con el mismo email de grupo, todas estáis usando <strong>el mismo asiento</strong> y por tanto compartís la <strong>misma bolsa de uso semanal</strong>. Cada mensaje, cada análisis largo y cada documento procesado por cualquiera del equipo consume de la misma cuenta.</p>
+        <p>Es muy fácil agotar el límite antes de tiempo y dejar al equipo sin Claude durante días hasta que se reinicie.</p>
+      </div>
+      <h3>Qué hacer para no quedaros sin uso</h3>
+      <ul class="bullets">
+        <li><strong>Reservad la cuenta de grupo para lo que de verdad sea trabajo de equipo:</strong> proyectos comunes, documentación compartida, base de conocimiento del Project Zubi. No para consultas personales o exploratorias.</li>
+        <li><strong>Las pruebas, experimentos y consultas casuales</strong> hacedlas desde vuestra licencia individual si la tenéis, no desde la cuenta de grupo.</li>
+        <li><strong>Sed conscientes del coste de las tareas:</strong> subir documentos muy largos, pedir resúmenes de cientos de páginas o mantener conversaciones interminables consume tokens rápido. Si la tarea es muy pesada, valorad si tiene que ir por la cuenta de grupo o si conviene hacerla individualmente.</li>
+        <li><strong>Si veis que el uso se está agotando rápido</strong>, comentadlo en el canal del equipo para que el resto modere su consumo durante esa semana. Y si pasa con frecuencia, hay que replantearse el modelo: o se reparten asientos individuales, o se contrata uso adicional.</li>
+      </ul>
+      <div class="callout info">
+        <span class="c-title">Cuándo conviene replantear el setup</span>
+        Si el equipo agota habitualmente el límite semanal, la cuenta de grupo deja de tener sentido económico. A medio plazo, lo lógico es que cada persona que use Claude de forma intensiva tenga su propio asiento dentro del plan Team. Hablad con quien administre la cuenta cuando esto empiece a pasar.
+      </div>
+    </section>
+
+    <section id="conectores">
+      <div class="sec-head">
+        <span class="sec-num">08</span>
         <h2>Conectores: qué son y cómo conectar Drive a tu chat</h2>
       </div>
       <p>Un <strong>conector</strong> permite que Claude acceda a una herramienta externa desde dentro de una conversación. Con el conector de Google Drive, por ejemplo, Claude puede leer y resumir documentos sin que tengas que descargarlos y volver a subirlos.</p>
-
       <div class="callout info">
         <span class="c-title">Cómo funciona el acceso</span>
         Claude solo accede a tus datos cuando se lo pides explícitamente en un mensaje, y recupera lo mínimo necesario. Refleja tus permisos existentes: no puede ver nada a lo que tú no tengas acceso. En planes Team, un Owner debe habilitar primero el conector a nivel de organización.
       </div>
-
       <h3>Cómo conectar Google Drive a un chat — paso a paso</h3>
       <ol class="steps">
         <li>
@@ -788,113 +973,83 @@
           <div class="step-body">Desde el menú <code>+</code> → <em>Conectores</em>, deja activado Google Drive para ese chat. A partir de ahí puedes pedirle que use documentos del Drive, pegando su URL o seleccionándolos del menú.</div>
         </li>
       </ol>
-
       <div class="example">
         <span class="ex-tag">Ejemplo de uso</span>
         <em>"Compara estos tres documentos del Drive y dame un resumen en cinco puntos de las diferencias clave entre ellos."</em> — o — <em>"¿Qué objetivos de marketing del Q3 se mencionan en este documento de estrategia?"</em>
       </div>
-
       <div class="callout warn">
         <span class="c-title">Recordatorio para la cuenta de grupo</span>
         Conectores solo con cuenta compartida y Drive compartido. Si necesitas trabajar con archivos personales, cámbiate a tu licencia individual. Nunca dejes tu Drive personal conectado en la cuenta de equipo.
       </div>
     </section>
 
-    <!-- 8. COWORK -->
     <section id="cowork">
       <div class="sec-head">
-        <span class="sec-num">08</span>
-        <h2>Cowork: el agente que ejecuta el trabajo, no solo lo aconseja</h2>
+        <span class="sec-num">09</span>
+        <h2>Cowork: por qué <em>no</em> se usa en la cuenta de grupo</h2>
       </div>
-      <p><strong>Cowork es un modo de la app de escritorio de Claude</strong> que convierte a Claude en un agente: en lugar de responderte mensaje a mensaje, le das un objetivo, le das acceso a una carpeta de tu ordenador y trabaja de forma autónoma, planificando y ejecutando varios pasos hasta entregarte un resultado terminado.</p>
+      <p>Cowork es un modo de la app de escritorio de Claude que convierte a Claude en un agente: en lugar de responderte mensaje a mensaje, le das un objetivo, le das acceso a una carpeta de tu ordenador y trabaja de forma autónoma, planificando y ejecutando varios pasos hasta entregarte un resultado terminado.</p>
+      <p>Es una herramienta potente. Pero por su naturaleza (acceso a archivos del ordenador donde se ejecuta), <strong>hay un caso de uso muy claro donde no debe utilizarse</strong>.</p>
 
-      <h3>Para qué sirve</h3>
+      <div class="callout danger">
+        <span class="c-title">Disclaimer importante: Cowork no es para chats grupales ni para cuentas de grupo</span>
+        <p>Cuando inicias una sesión de Cowork, estás <strong>concediendo acceso a las carpetas de tu ordenador</strong> a esa sesión. Si esa sesión vive en una cuenta compartida con varias personas, en la práctica estás permitiendo que otros miembros del equipo —los que usen esa misma cuenta— puedan llegar a navegar, leer o modificar archivos de <strong>tu ordenador personal</strong>.</p>
+        <p>Por este motivo, <strong>no se recomienda usar Cowork desde la cuenta de grupo bajo ningún concepto.</strong> Es una vía directa a exponer información local de tu equipo sin querer.</p>
+      </div>
+
+      <h3>La regla de la empresa</h3>
       <ul class="bullets">
-        <li><strong>Organizar archivos:</strong> apuntar Cowork a una carpeta caótica y pedirle que ordene, renombre, deduplique y clasifique por tipo o contenido.</li>
-        <li><strong>Generar documentos a partir de fuentes:</strong> le das varios archivos y produce un borrador estructurado: informe, presentación, hoja de cálculo.</li>
-        <li><strong>Procesar datos:</strong> limpiar un CSV con miles de filas, estandarizar formatos, generar estadísticas.</li>
-        <li><strong>Flujos de varios pasos:</strong> leer un brief, buscar información, redactar un análisis y crear el documento final, todo en una sola tarea encadenada.</li>
-        <li><strong>Tareas recurrentes:</strong> programar que cada lunes te prepare un resumen, o cada viernes un informe de estado a partir de una carpeta.</li>
+        <li><strong>Cowork solo se usa desde cuentas unipersonales.</strong> Si quieres usarlo, hazlo desde tu licencia individual de Claude, donde la sesión está aislada y solo tú tienes acceso.</li>
+        <li><strong>El trabajo del equipo se hace siempre con documentación en Drive o en cloud</strong>, según la política de empresa. Eso garantiza permisos, trazabilidad, copias de seguridad y acceso compartido controlado. Cowork sobre archivos locales no cumple ninguno de esos requisitos.</li>
+        <li><strong>Si encontráis un caso de uso donde Cowork aportaría valor</strong>, está bien usarlo —pero siempre individualmente, sobre tu propio ordenador y tu propia cuenta, no como herramienta colectiva.</li>
       </ul>
 
-      <h3>Ejemplos concretos</h3>
-      <div class="example">
-        <span class="ex-tag">Organización</span>
-        <em>"Organiza todos los archivos de la carpeta Descargas. Crea subcarpetas por tipo y renombra los archivos con nombres descriptivos según su contenido."</em>
-      </div>
-      <div class="example">
-        <span class="ex-tag">Informe a partir de fuentes</span>
-        <em>"Lee el brief del proyecto en brief.docx, busca tendencias de mercado relacionadas y crea un documento de análisis con recomendaciones y una hoja de cálculo con el plan de acción y los plazos."</em>
-      </div>
-      <div class="example">
-        <span class="ex-tag">Tarea programada</span>
-        <em>"Cada viernes, recopila los datos de la carpeta /actualizaciones-proyecto en un informe de estado con el progreso, los bloqueos de la semana y las métricas clave."</em>
-      </div>
+      <h3>Para qué sí puede ser útil (en cuenta individual)</h3>
+      <ul class="bullets">
+        <li><strong>Organizar archivos personales:</strong> apuntar Cowork a una carpeta caótica y pedirle que ordene, renombre, deduplique y clasifique por tipo o contenido.</li>
+        <li><strong>Generar documentos a partir de fuentes locales:</strong> le das varios archivos tuyos y produce un borrador estructurado.</li>
+        <li><strong>Procesar datos de un archivo personal:</strong> limpiar un CSV, estandarizar formatos, generar estadísticas.</li>
+        <li><strong>Tareas recurrentes individuales:</strong> programar que cada lunes te prepare un resumen a partir de carpetas tuyas.</li>
+      </ul>
 
-      <div class="callout info">
-        <span class="c-title">Cómo trabaja con seguridad</span>
-        Cowork ejecuta el código en una máquina virtual aislada de tu sistema, pero sí puede modificar los archivos reales de las carpetas que le autorices. Antes de borrar nada permanentemente te pide permiso explícito. Revisa siempre el plan que propone antes de dejarlo correr, sobre todo con archivos sensibles. La app de escritorio debe permanecer abierta mientras trabaja.
-      </div>
       <div class="callout warn">
-        <span class="c-title">Cautela con la cuenta de grupo</span>
-        Cowork accede a las carpetas locales del ordenador donde se ejecuta y a los conectores configurados. Aplica el mismo criterio: no le des acceso a carpetas con información personal de un compañero, y si necesita conectores, que sean los compartidos del equipo. Las sesiones de Cowork, además, no se comparten entre personas.
+        <span class="c-title">Cómo trabaja con seguridad (incluso en uso individual)</span>
+        Cowork ejecuta el código en una máquina virtual aislada de tu sistema, pero sí puede modificar los archivos reales de las carpetas que le autorices. Antes de borrar nada permanentemente te pide permiso explícito. Revisa siempre el plan que propone antes de dejarlo correr. La app de escritorio debe permanecer abierta mientras trabaja.
       </div>
     </section>
 
-    <!-- 9. CODE -->
     <section id="code">
       <div class="sec-head">
-        <span class="sec-num">09</span>
+        <span class="sec-num">10</span>
         <h2>Claude Code: qué es (aunque no vayáis a programar)</h2>
       </div>
       <p>Para vuestro equipo, <strong>Code no es la herramienta del día a día</strong>: no estáis pensados para programar. Pero conviene saber qué es para no confundirlo con Cowork y para reconocerlo si alguien lo menciona.</p>
       <p><strong>Claude Code es una herramienta para tareas de programación que se usa desde la terminal.</strong> Permite a desarrolladores delegar trabajo de código: leer un proyecto entero, escribir y modificar archivos, ejecutar comandos. Es muy potente, pero su interfaz y su público son técnicos.</p>
-
       <table class="cmp">
         <thead>
           <tr><th></th><th>Cowork</th><th>Claude Code</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>Para quién</td>
-            <td>Perfiles no técnicos. Trabajo de oficina, documentos, datos.</td>
-            <td>Desarrolladores. Tareas de programación.</td>
-          </tr>
-          <tr>
-            <td>Dónde vive</td>
-            <td>App de escritorio de Claude, interfaz visual.</td>
-            <td>En la terminal (línea de comandos).</td>
-          </tr>
-          <tr>
-            <td>Qué hace</td>
-            <td>Organiza archivos, redacta informes, procesa datos.</td>
-            <td>Lee bases de código, escribe y depura código, automatiza flujos de desarrollo.</td>
-          </tr>
-          <tr>
-            <td>¿Lo usaréis en Zubi?</td>
-            <td>Sí, es la herramienta agéntica natural para vuestro trabajo.</td>
-            <td>Probablemente no. Bueno conocerlo, pero no es vuestra prioridad.</td>
-          </tr>
+          <tr><td>Para quién</td><td>Perfiles no técnicos. Trabajo de oficina, documentos, datos.</td><td>Desarrolladores. Tareas de programación.</td></tr>
+          <tr><td>Dónde vive</td><td>App de escritorio de Claude, interfaz visual.</td><td>En la terminal (línea de comandos).</td></tr>
+          <tr><td>Qué hace</td><td>Organiza archivos, redacta informes, procesa datos.</td><td>Lee bases de código, escribe y depura código, automatiza flujos de desarrollo.</td></tr>
+          <tr><td>¿Lo usaréis en Zubi?</td><td>Solo en cuentas individuales (ver sección 09).</td><td>Probablemente no. Bueno conocerlo, pero no es vuestra prioridad.</td></tr>
         </tbody>
       </table>
-
       <div class="callout tip">
         <span class="c-title">La forma fácil de recordarlo</span>
-        Cowork y Code comparten la misma arquitectura por debajo. La diferencia es el envoltorio: Cowork es "Claude Code para el resto del trabajo", con una interfaz visual y sin terminal. Vosotros os quedáis con Cowork.
+        Cowork y Code comparten la misma arquitectura por debajo. La diferencia es el envoltorio: Cowork es "Claude Code para el resto del trabajo", con una interfaz visual y sin terminal.
       </div>
     </section>
 
-    <!-- 10. CHECKLIST -->
     <section id="checklist">
       <div class="sec-head">
-        <span class="sec-num">10</span>
+        <span class="sec-num">11</span>
         <h2>Checklist de buenas prácticas</h2>
       </div>
       <p>Marca cada punto a medida que lo interiorices. Sirve como recordatorio rápido cuando trabajes en la cuenta de equipo.</p>
-
-      <div class="progress-label" id="progressLabel">0 de 8 completado</div>
+      <div class="progress-label" id="progressLabel">0 de 10 completado</div>
       <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-
       <div class="checklist" id="checklist">
         <label><input type="checkbox"><span class="ck-text"><strong>Un tema, un chat.</strong> Abro un chat nuevo para cada tarea distinta en lugar de mezclarlo todo.</span></label>
         <label><input type="checkbox"><span class="ck-text"><strong>Nombro mis chats</strong> con mis iniciales y el tema, para que nadie del equipo los toque por error.</span></label>
@@ -902,10 +1057,11 @@
         <label><input type="checkbox"><span class="ck-text"><strong>El trabajo común va por el Project Zubi</strong>, subiendo documentos a su base de conocimiento, no metiendo a varios en un mismo chat.</span></label>
         <label><input type="checkbox"><span class="ck-text"><strong>No conecto mi Drive ni conectores personales</strong> a la cuenta de grupo.</span></label>
         <label><input type="checkbox"><span class="ck-text"><strong>Si necesito conectores en la cuenta de grupo</strong>, uso cuenta de Google compartida y Drive compartido del equipo.</span></label>
+        <label><input type="checkbox"><span class="ck-text"><strong>Soy consciente del consumo de tokens</strong> en la cuenta de grupo, y reservo esa cuenta para trabajo de equipo, no para pruebas personales.</span></label>
+        <label><input type="checkbox"><span class="ck-text"><strong>No uso Cowork desde la cuenta de grupo</strong>, bajo ningún concepto.</span></label>
+        <label><input type="checkbox"><span class="ck-text"><strong>Si uso Cowork, es desde mi cuenta individual</strong> y sobre mis archivos personales únicamente.</span></label>
         <label><input type="checkbox"><span class="ck-text"><strong>Doy contexto antes de pedir:</strong> quién soy, para qué es, a quién va dirigido y en qué formato lo quiero.</span></label>
-        <label><input type="checkbox"><span class="ck-text"><strong>Reviso el plan de Cowork</strong> antes de dejarlo ejecutar, sobre todo con archivos sensibles.</span></label>
       </div>
-
       <h3>Preguntas rápidas</h3>
       <details class="acc">
         <summary><span>¿Puede otra persona del equipo ver mis chats?</span><span class="chev">+</span></summary>
@@ -915,15 +1071,15 @@
         </div>
       </details>
       <details class="acc">
-        <summary><span>¿Qué hago si agoto mi límite de uso?</span><span class="chev">+</span></summary>
+        <summary><span>¿Qué hago si el equipo agota el límite de uso?</span><span class="chev">+</span></summary>
         <div class="acc-body">
-          <p>En el plan Team los límites son por persona y se reinician periódicamente. Si agotas el tuyo, no afectas al de tus compañeros. La organización puede habilitar uso adicional si hace falta; coméntalo con quien administre la cuenta.</p>
+          <p>En cuenta de grupo, el límite es compartido entre todos. Si se agota antes de que se reinicie la franja semanal, no podréis seguir usando esa cuenta hasta el reinicio. Avisad en el canal del equipo, moderad el uso durante esa semana, y si el problema se repite, hablad con quien administre la cuenta para valorar asientos individuales o uso adicional.</p>
         </div>
       </details>
       <details class="acc">
         <summary><span>¿Cuándo uso un chat normal y cuándo Cowork?</span><span class="chev">+</span></summary>
         <div class="acc-body">
-          <p>Usa un chat normal para pensar, redactar, analizar y resolver dudas: lo conversacional. Usa Cowork cuando la tarea implique ejecutar varios pasos sobre archivos reales de tu ordenador (organizar carpetas, generar documentos a partir de fuentes, procesar datos) y prefieras delegar el resultado terminado.</p>
+          <p>Usa un chat normal para todo lo que sea trabajo en equipo o desde la cuenta de grupo: pensar, redactar, analizar, resolver dudas. Cowork solo lo usas desde tu cuenta individual, sobre tus archivos personales, cuando la tarea implique ejecutar varios pasos sobre archivos locales y prefieras delegar el resultado terminado.</p>
         </div>
       </details>
       <details class="acc">
@@ -935,8 +1091,24 @@
     </section>
 
     <footer>
-      <p><strong>Equipo Zubi · Guía de inicio para Claude Teams.</strong></p>
-      <p style="margin-top:8px;">Este documento vive en el Project compartido <em>Zubi</em>. Si algo cambia en la forma de trabajar del equipo, actualiza esta guía para que las próximas incorporaciones encuentren la versión correcta. Para detalles técnicos siempre actualizados puedes consultar el centro de ayuda en <a href="https://support.claude.com">support.claude.com</a>.</p>
+      <p><strong>Equipo Zubi · Centro de aprendizaje de Claude.</strong></p>
+      <p style="margin-top:8px;">Este documento es vivo: se va actualizando con nuevas píldoras de formación, casos de uso y recetas. La versión actual y la fecha de publicación aparecen en la parte superior de la barra lateral. Para detalles técnicos siempre actualizados sobre el producto, consulta el centro de ayuda en <a href="https://support.claude.com">support.claude.com</a>.</p>
+
+      <div class="changelog">
+        <h4>Historial de versiones</h4>
+        <ul>
+          <li>
+            <span class="cl-ver">v1.1.0</span>
+            <span class="cl-date">15 may 2026</span>
+            <span>Navegación por categorías colapsable. Nueva sección sobre límites de tokens en cuenta compartida. Disclaimer reforzado sobre Cowork: uso exclusivo en cuentas individuales.</span>
+          </li>
+          <li>
+            <span class="cl-ver">v1.0.0</span>
+            <span class="cl-date">14 may 2026</span>
+            <span>Versión inicial: guía de onboarding completa para Claude Teams.</span>
+          </li>
+        </ul>
+      </div>
     </footer>
 
   </main>
@@ -944,7 +1116,14 @@
 </div>
 
 <script>
-  // ----- Progreso del checklist -----
+  (function () {
+    document.querySelectorAll('.category:not(.locked) .cat-header').forEach(btn => {
+      btn.addEventListener('click', () => {
+        btn.closest('.category').classList.toggle('open');
+      });
+    });
+  })();
+
   (function () {
     const boxes = document.querySelectorAll('#checklist input[type="checkbox"]');
     const fill = document.getElementById('progressFill');
@@ -959,9 +1138,8 @@
     update();
   })();
 
-  // ----- Resaltado de la sección activa en el índice -----
   (function () {
-    const links = [...document.querySelectorAll('nav.toc a')];
+    const links = [...document.querySelectorAll('.cat-items a')];
     const sections = links
       .map(a => document.querySelector(a.getAttribute('href')))
       .filter(Boolean);
@@ -973,7 +1151,11 @@
         if (e.isIntersecting) {
           links.forEach(l => l.classList.remove('active'));
           const a = byId[e.target.id];
-          if (a) a.classList.add('active');
+          if (a) {
+            a.classList.add('active');
+            const cat = a.closest('.category');
+            if (cat && !cat.classList.contains('open')) cat.classList.add('open');
+          }
         }
       });
     }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
